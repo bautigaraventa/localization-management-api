@@ -65,13 +65,13 @@ async def get_translation_completion(project_id: int):
 
     for locale in locales:
         translations_response = supabase.table("translations") \
-            .select("key_id") \
+            .select("value") \
             .in_("key_id", key_ids) \
             .eq("locale", locale) \
             .execute()
 
         translations = translations_response.data or []
-        translated_count = len({t["key_id"] for t in translations})
+        translated_count = len([t for t in translations if t["value"]])
         percent = round((translated_count / total_keys) * 100, 2)
         completion[locale] = percent
 
